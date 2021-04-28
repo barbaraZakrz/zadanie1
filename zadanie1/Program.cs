@@ -20,47 +20,81 @@ namespace zadanie1
         }
     }
 
-        class Program
+    class Program
+    {
+        public static List<Wiersz> importData(string fileName)
         {
-            public static List<Wiersz> importData(string fileName)
+            string wiersz;
+            string[] wierszSplit;
+            List<Wiersz> allData = new List<Wiersz>();
+            System.IO.StreamReader file = new System.IO.StreamReader(fileName);
+            while (file.ReadLine() != null)
             {
-                string wiersz;
-                string[] wierszSplit;
-                List<Wiersz> allData = new List<Wiersz>();
-                System.IO.StreamReader file = new System.IO.StreamReader(fileName);
-                while (file.ReadLine() != null)
+                List<double> parametry = new List<double>();
+                wiersz = file.ReadLine();
+                wierszSplit = wiersz.Split(' ');
+                for (int i = 0; i < (wierszSplit.Length - 1); i++)
                 {
-                    List<double> parametry = new List<double>();
-                    wiersz = file.ReadLine();
-                    wierszSplit = wiersz.Split(' ');
-                    for (int i = 0; i < (wierszSplit.Length - 1); i++)
-                    {
-                        parametry.Add(double.Parse(wierszSplit[i], CultureInfo.InvariantCulture));
-                    }
-                    Wiersz Obiekt = new Wiersz(parametry);
-                    allData.Add(Obiekt);
+                    parametry.Add(double.Parse(wierszSplit[i], CultureInfo.InvariantCulture));
                 }
-                file.Close();
-                return allData;
+                Wiersz Obiekt = new Wiersz(parametry);
+                allData.Add(Obiekt);
+            }
+            file.Close();
+            return allData;
+
+        }
+
+        public static void wyswietl(List<Wiersz> Obiekty)
+        {
+            for (int i = 0; i < Obiekty.Count; i++)
+            {
+                for (int j = 0; j < Obiekty[i].parametry.Count; j++)
+                {
+                    Console.WriteLine(Obiekty[i].parametry[j]);
+                }
 
             }
 
-            public static void wyswietl(List<Wiersz> Obiekty)
+        }
+
+
+        public static List<Wiersz> normalizacja(List<Wiersz> lista)
+        { 
+            List<double> min = new List<double>(lista[0].parametry);
+            List<double> max = new List<double>(lista[0].parametry);
+
+            for (int i = 1; i < lista.Count; i++)
             {
-                for(int i =0; i<Obiekty.Count; i++)
+                for (int j = 0; j < min.Count; j++)
                 {
-                    for (int j =0; j<Obiekty[i].parametry.Count; j++)
+                    if (lista[i].parametry[j] < min[j])
                     {
-                        Console.WriteLine(Obiekty[i].parametry[j]);
+                        min[j] = lista[i].parametry[j];
                     }
-                   
+
+                    if (lista[i].parametry[j] > max[j])
+                    {
+                        max[j] = lista[i].parametry[j];
+                    }
                 }
-                
             }
 
+            for (int i = 0; i < lista.Count; i++)
+            {
+                for (int j = 0; j < min.Count; j++)
+                {
+                    lista[i].parametry[j] = (lista[i].parametry[j] - min[j]) / (max[j] - min[j]);
+                }
+            }
+
+                return lista;
+        }
+            
             static void Main(string[] args)
             {
-                wyswietl(importData("australian.dat"));
+               // wyswietl(importData("australian.dat"));
+            //wyswietl(normalizacja(importData("australian.dat")));
                 
 
                 Console.WriteLine("Hello World!");
@@ -68,4 +102,5 @@ namespace zadanie1
         
     }
 }
+
 
