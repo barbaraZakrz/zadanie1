@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 using System.Globalization;
@@ -90,15 +89,43 @@ namespace zadanie1
 
                 return lista;
         }
-            
-            static void Main(string[] args)
+
+        public static void zapis(List<Wiersz> lista) 
+        {
+            if (System.IO.File.Exists("dane.txt"))    
             {
-               // wyswietl(importData("australian.dat"));
-            //wyswietl(normalizacja(importData("australian.dat")));
+                System.IO.File.Delete("dane.txt");    
+            }
+
+            String wiersz = "";
+
+            using (System.IO.StreamWriter sw = System.IO.File.CreateText("dane.txt"))
+            {
+                for (int i=0; i < lista.Count; i++)
+                {
+                    wiersz = "";
+                    for (int j = 0; j<lista[i].parametry.Count; j++)
+                    {
+                        String parametr = lista[i].parametry[j].ToString();
+                        wiersz = String.Concat(wiersz, parametr, " ");
+                        //wiersz.Concat(" ");
+                    }
+                    sw.WriteLine(wiersz);
+                }
+
+
+            }
+           
+        }
+            
+        static void Main(string[] args)
+        {
+           importData("australian.dat");
+           zapis(normalizacja(importData("australian.dat")));
                 
 
-                Console.WriteLine("Hello World!");
-            }
+            Console.WriteLine("Hello World!");
+        }
         
     }
 }
